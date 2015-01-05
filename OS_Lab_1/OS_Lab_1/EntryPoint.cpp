@@ -1,30 +1,193 @@
 #include <iostream>
 #include <vector>
-#define MEM_SIZE 10
+#include <iomanip>
+#include <string>
+#include <cmath>
+
+#define STATUS __int32
+#define clear system("cls")
+#define MEM_SIZE	10
+#define BLOCK_SIZE	1024
 using namespace std;
-struct mem_block;
-vector<mem_block> memory;
+
+STATUS error = 0;
+/*
+Error Code List 
+0 - Успешно
+1 - Нет пустых блоков
+2 - Недостаточно памяти
+3 - Неверный индекс блока
+*/
 
 struct mem_block
 {
-	bool	lock;
-	void*	data;
+	bool	bLock;
+	int		iChild_id;
+	int		iParent_id;
 };
 
-void ClearMemory()
+void InitMemory(vector<mem_block> &memory)
 {
-	for (size_t i = 0; i < memory.size(); i++)
+	mem_block temp_block = { false, -1, -1};
+	for (size_t i = 0; i < MEM_SIZE; i++)
 	{
-		memory[i].data = nullptr;
-		memory[i].lock = false;
+		memory.push_back(temp_block);
 	}
 }
 
+void ClearMemory(vector<mem_block> &memory)
+{
+	for (size_t i = 0; i < memory.size(); i++)
+	{
+		memory[i].bLock		= false;
+		memory[i].iChild_id	= -1;
+		memory[i].iParent_id = -1;
+	}
+}
+
+void PrintMemory(vector<mem_block> memory)
+{
+	for (size_t i = 0; i < memory.size(); i++)
+	{
+		cout<< " ID: "<< setw(3) <<(i + 1)
+			<< " Lock: " << setw(5) << ((memory[i].bLock) ? "true" : "false")
+			<< " Clild ID: " << setw(3) << (memory[i].iChild_id) 
+			<< " Parent ID: " << setw(3) << (memory[i].iParent_id) << endl;
+	}
+	cout << "\nSTATUS: " << error << endl;
+}
+
+int GetBlockCountForAlloc(int Size)
+{
+	int i = 0;
+	while (Size > 0)
+	{
+		i += 1;
+		Size -= BLOCK_SIZE;
+	}
+	return i;
+}
+
+int GetFreeBlockCount(vector<mem_block> &memory)
+{
+	int iOut = 0;
+	for (size_t i = 0; i < MEM_SIZE; i++)
+	{
+		if (memory[i].bLock == false)
+		{
+			iOut += 1;
+		}
+	}
+	return iOut;
+}
+
+void AllocMemory(int iSize, vector<mem_block> &memory)
+{
+	if (iSize > BLOCK_SIZE)
+	{
+		if (GetFreeBlockCount(memory) >= GetBlockCountForAlloc(iSize))
+		{
+			vector<int> blocks;
+			int i = 0;
+			while (blocks.size() != GetBlockCountForAlloc(iSize))
+			{
+				if (memory[i].bLock == false){
+					blocks.push_back(i);
+				}
+				i++; 
+			}
+			for (size_t i = 0; i < blocks.size(); i++)
+			{
+				if (i == (blocks.size()-1))
+				{
+					memory[blocks[i]].bLock = true;
+					memory[blocks[i]].iParent_id = blocks[i - 1];
+					break;
+				}
+				memory[blocks[i]].bLock = true;
+				memory[blocks[i]].iChild_id = blocks[i + 1];
+				if (i != 0)
+					memory[blocks[i]].iParent_id = blocks[i - 1];
+			}
+		}
+		else
+		{error = 2;}
+	}
+	else
+	{
+		for (size_t i = 0; i < MEM_SIZE; i++)
+		{
+			if (memory[i].bLock == false)
+			{
+				memory[i].bLock = true;
+				error = 0;
+				return;
+			}
+		}
+		error = 1;
+	}
+}
+
+void FreeMemory(size_t Index, vector<mem_block> &memory)
+{
+	if (Index > 0 && Index < memory.size())
+	{
+
+		if ((memory[Index-1].iChild_id == -1) && (memory[Index-1].iParent_id == -1))
+		{
+			memory[Index - 1].bLock = false;
+			return;
+		}
+
+		if (memory[Index-1].iParent_id == -1)
+		{
+			int pI = Index - 1;
+			
+			while (memory[pI].iChild_id > -1)
+			{
+				pI = memory[pI].iChild_id;
+				memory[memory[pI].iParent_id].bLock = false;
+				memory[memory[pI].iParent_id].iChild_id = -1;
+				memory[memory[pI].iParent_id]. = false;
+			}
+
+		}
+
+	}
+	else
+	{
+		error = 3;
+	}
+}
 
 void main()
 {
-	memory.reserve(MEM_SIZE);
+	vector<mem_block> memory;
+	InitMemory(memory);
+	string sBuffer;
 
+	while (true)
+	{
+		clear;
+		PrintMemory(memory);
+		cout << "\ncommand>";
+		cin >> sBuffer;
 
-
+		if (sBuffer.find("alloc") != -1)
+		{
+			cout << "size>";
+			cin >> sBuffer;
+			AllocMemory(atoi(sBuffer.c_str()),memory);
+		}
+		else if (sBuffer.find("free") != -1)
+		{
+			cout << "index>";
+			cin >> sBuffer;
+			FreeMemory(atoi(sBuffer.c_str()), memory);
+		}
+		else if (sBuffer.find("clear"))
+		{
+			ClearMemory(memory);
+		}
+	}
 }
