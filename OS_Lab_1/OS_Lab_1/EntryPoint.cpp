@@ -141,16 +141,26 @@ void FreeMemory(size_t Index, vector<mem_block> &memory)
 
 		if (memory[Index-1].iParent_id == -1)
 		{
-			int pI = Index - 1;
-			
-			while (memory[pI].iChild_id > -1)
+			Index--;
+			vector<int> chield_list;
+			chield_list.push_back(Index);
+			while (memory[Index].iChild_id != -1)
 			{
-				pI = memory[pI].iChild_id;
-				memory[memory[pI].iParent_id].bLock = false;
-				memory[memory[pI].iParent_id].iChild_id = -1;
-				memory[memory[pI].iParent_id]. = false;
+				Index = memory[Index].iChild_id;
+				chield_list.push_back(Index);
 			}
 
+			for (size_t i = 0; i < chield_list.size(); i++)
+			{
+				memory[chield_list[i]].bLock = false;
+				memory[chield_list[i]].iChild_id = -1;
+				memory[chield_list[i]].iParent_id = -1;
+			}
+		}
+
+		if (memory[Index-1].iParent_id != -1)
+		{
+			Index--;
 		}
 
 	}
