@@ -7,15 +7,51 @@
 
 using namespace std;
 
-void main(int args, char **argv)
+
+double inline fact(int n)
 {
-	int size,rank;
-	if (MPI_Init(&args, &argv))
-	{printf("MPI_Init error\n"); return;}
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	if (n == 0)
+		return 1;
+	else
+		return n*fact(n - 1);
+}
+
+
+
+int main(int argc, char *argv[])
+{
+#ifdef _WIN32
+	setlocale(LC_ALL, "Russian");
+#endif
+	int num		/*Количество*/,
+		id		/*Номер*/;
+	double 
+		s_time	/*Начало работы*/, 
+		d_time	/*Разность начала и конца работы программы*/;
+
+	if (int rc = MPI_Init(&argc, &argv))
+	{
+		cout << "Ошибка запуска, выполнение остановлено " << endl;
+		MPI_Abort(MPI_COMM_WORLD, rc);
+	}
+
+	MPI_Comm_size(MPI_COMM_WORLD, &num);
+	MPI_Comm_rank(MPI_COMM_WORLD, &id);
+	/*=============================================================*/
+
+	/*=============================================================*/
+	if (id == 0)
+	{
+		s_time = MPI_Wtime();
+	}
+
 	
-	printf("Size: %d Rank %d\n", size,rank);
-	
+	if (id == 0)
+	{
+		d_time = MPI_Wtime() - s_time;
+		cout << "TIME: "<<d_time * 1000 << endl;
+	}
+
 	MPI_Finalize();
+	return 0;
 }
