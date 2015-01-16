@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <mpi.h>
 
 #ifdef _WIN32
@@ -23,15 +23,15 @@ int main(int argc, char *argv[])
 #ifdef _WIN32
 	setlocale(LC_ALL, "Russian");
 #endif
-	int num		/*Количество*/,
-		id		/*Номер*/;
+	int num		/*РљРѕР»РёС‡РµСЃС‚РІРѕ*/,
+		id		/*РќРѕРјРµСЂ*/;
 	double 
-		s_time	/*Начало работы*/, 
-		d_time	/*Разность начала и конца работы программы*/;
+		s_time	/*РќР°С‡Р°Р»Рѕ СЂР°Р±РѕС‚С‹*/, 
+		d_time	/*Р Р°Р·РЅРѕСЃС‚СЊ РЅР°С‡Р°Р»Р° Рё РєРѕРЅС†Р° СЂР°Р±РѕС‚С‹ РїСЂРѕРіСЂР°РјРјС‹*/;
 
 	if (int rc = MPI_Init(&argc, &argv))
 	{
-		cout << "Ошибка запуска, выполнение остановлено " << endl;
+		cout << "РћС€РёР±РєР° Р·Р°РїСѓСЃРєР°, РІС‹РїРѕР»РЅРµРЅРёРµ РѕСЃС‚Р°РЅРѕРІР»РµРЅРѕ " << endl;
 		MPI_Abort(MPI_COMM_WORLD, rc);
 	}
 
