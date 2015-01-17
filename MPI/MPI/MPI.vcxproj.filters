@@ -19,4 +19,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="win_test.bat">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="lin_test.sh">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

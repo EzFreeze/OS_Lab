@@ -83,6 +83,10 @@
   <ItemGroup>
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="lin_test.sh" />
+    <None Include="win_test.bat" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
