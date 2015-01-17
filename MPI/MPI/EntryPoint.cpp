@@ -8,6 +8,7 @@
 #ifdef _WIN32
 #pragma comment(lib,"msmpi.lib")
 #endif
+
 #define  DEBUG
 
 int ProcNum; 
@@ -55,7 +56,7 @@ void ProcessInitialization(double* &pMatrix, double* &pVector,
 #ifdef DEBUG
 			//Size = argv[1];
 #else 
-			printf("\nEnter the size of the matrix and the vector: ");
+			printf("\nВведите размер матрицы: ");
 #ifdef _WIN32
 			scanf_s("%d", &Size);
 #else
@@ -64,7 +65,7 @@ void ProcessInitialization(double* &pMatrix, double* &pVector,
 
 #endif
 			if (Size < ProcNum) {
-				printf("Size must be greater than number of processes! \n");
+				printf("Рамер должен быть больше количества потоков! \n");
 #ifdef DEBUG
 				exit(1);
 #endif // DEBUG
@@ -258,9 +259,9 @@ void ParallelBackSubstitution(double* pProcRows, double* pProcVector,
 void TestDistribution(double* pMatrix, double* pVector, double* pProcRows,
 	double* pProcVector, int Size, int RowNum) {
 	if (ProcRank == 0) {
-		printf("\nInitial Matrix: \n\n");
+		printf("\nУравнение: \n\n");
 		PrintMatrix(pMatrix, Size, Size);
-		printf("\nInitial Vector: \n");
+		printf("\nСвободные члены: \n");
 		PrintVector(pVector, Size);
 	}
 	MPI_Barrier(MPI_COMM_WORLD);
@@ -321,9 +322,9 @@ void TestResult(double* pMatrix, double* pVector, double* pResult, int
 				equal = 1;
 		}
 		if (equal == 1)
-			printf("\n\nThe result of the parallel Gauss algorithm is NOT correct.");
+			printf("\n\n");//-
 		else
-			printf("\n\nThe result of the parallel Gauss algorithm is correct.");
+			printf("\n\n");//+
 		delete[] pRightPartVector;
 	}
 }
@@ -337,7 +338,24 @@ void main(int argc, char* argv[]) {
 	int Size; 
 	int RowNum; 
 	double start, finish, duration;
-	Size = atoi(argv[1]);
+
+#ifdef DEBUG
+	if (argc >= 2)
+	{
+		Size = atoi(argv[1]);
+		if (Size == 0)
+		{
+			printf("\nОшибка: неверный размер\n");
+			exit(1);
+		}
+	}
+	else
+	{
+		printf("\nВведите размер матрицы.\n \
+			   	Пример: mpiexec -n 4 MPI.exe 10");
+	}
+#endif // DEBUG
+
 	setvbuf(stdout, 0, _IONBF, 0);
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
@@ -354,12 +372,12 @@ void main(int argc, char* argv[]) {
 	finish = MPI_Wtime();
 	duration = finish - start;
 	if (ProcRank == 0) {
-		printf("\n\nResult Vector: \n");
+		printf("\n\nРезультат: \n");
 		PrintResultVector(pResult, Size);
 	}
 	TestResult(pMatrix, pVector, pResult, Size);
 	if (ProcRank == 0)
-		printf("\n\nTime of execution: %f\n", duration);
+		printf("\n\nВремя выполнения: %f\n", duration);
 	ProcessTermination(pMatrix, pVector, pResult, pProcRows, pProcVector,
 		pProcResult);
 	MPI_Finalize();
