@@ -328,7 +328,7 @@ void TestResult(double* pMatrix, double* pVector, double* pResult, int
 		delete[] pRightPartVector;
 	}
 }
-void main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
 	double* pMatrix; 
 	double* pVector; 
 	double* pResult; 
@@ -351,8 +351,11 @@ void main(int argc, char* argv[]) {
 	}
 	else
 	{
-		printf("\nВведите размер матрицы.\n \
-			   	Пример: mpiexec -n 4 MPI.exe 10");
+#ifdef _WIN32
+		printf("\nВведите размер матрицы.\nПример: mpiexec -n 4 MPI.exe 10");
+#else
+		printf("\nВведите размер матрицы.\nПример: mpirun -np 4 ./a.out 10");
+#endif // _WIN32
 	}
 #endif // DEBUG
 
@@ -381,4 +384,5 @@ void main(int argc, char* argv[]) {
 	ProcessTermination(pMatrix, pVector, pResult, pProcRows, pProcVector,
 		pProcResult);
 	MPI_Finalize();
+	return 1;
 }
