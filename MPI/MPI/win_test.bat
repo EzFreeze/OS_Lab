@@ -1,1 +1,1 @@
-mpiexec -n %1 MPI.exe %2 >Logs\log_thread(%1)_matrix_size(%2).log
+mpiexec -n %1 ../Release/MPI.exe %2 >../Logs/log_thread(%1)_matrix_size(%2).log
