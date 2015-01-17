@@ -180,7 +180,7 @@ void FreeMemory(size_t Index, vector<mem_block> &memory)
 	}
 }
 
-void main()
+int main()
 {
 	vector<mem_block> memory;
 	InitMemory(memory);
@@ -210,4 +210,5 @@ void main()
 			ClearMemory(memory);
 		}
 	}
+	return 1;
 }
