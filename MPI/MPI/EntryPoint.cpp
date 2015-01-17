@@ -1,11 +1,11 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
 #include <time.h>
 #include <math.h>
 #include <mpi.h>
 
 #ifdef _WIN32
+#include <conio.h>
 #pragma comment(lib,"msmpi.lib")
 #endif
 
