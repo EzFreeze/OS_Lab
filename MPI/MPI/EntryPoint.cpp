@@ -384,5 +384,6 @@ int main(int argc, char* argv[]) {
 	ProcessTermination(pMatrix, pVector, pResult, pProcRows, pProcVector,
 		pProcResult);
 	MPI_Finalize();
-	return 1;
+	
+	return 5;
 }
