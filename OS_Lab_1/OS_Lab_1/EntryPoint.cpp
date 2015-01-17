@@ -1,11 +1,21 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <vector>
 #include <iomanip>
 #include <string>
 #include <cmath>
 
+#ifdef _WIN32
+
 #define STATUS __int32
-#define clear system("cls")
+#define clear system("cls");
+
+#else
+#include <stdlib.h>
+#define STATUS int
+#define clear system("clear");
+
+#endif // _WIN32
+
 #define MEM_SIZE	10
 #define BLOCK_SIZE	1024
 using namespace std;
@@ -13,10 +23,10 @@ using namespace std;
 STATUS error = 0;
 /*
 Error Code List 
-0 - Успешно
-1 - Нет пустых блоков
-2 - Недостаточно памяти
-3 - Неверный индекс блока
+0 - РЈСЃРїРµС€РЅРѕ
+1 - РќРµС‚ РїСѓСЃС‚С‹С… Р±Р»РѕРєРѕРІ
+2 - РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РїР°РјСЏС‚Рё
+3 - РќРµРІРµСЂРЅС‹Р№ РёРЅРґРµРєСЃ Р±Р»РѕРєР°
 */
 
 struct mem_block
@@ -178,7 +188,7 @@ void main()
 
 	while (true)
 	{
-		clear;
+		clear
 		PrintMemory(memory);
 		cout << "\ncommand>";
 		cin >> sBuffer;
