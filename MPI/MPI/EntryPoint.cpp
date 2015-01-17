@@ -1,5 +1,4 @@
-﻿//#define  DEBUG
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <time.h>
@@ -9,6 +8,7 @@
 #ifdef _WIN32
 #pragma comment(lib,"msmpi.lib")
 #endif
+#define  DEBUG
 
 int ProcNum; 
 int ProcRank; 
@@ -53,7 +53,7 @@ void ProcessInitialization(double* &pMatrix, double* &pVector,
 	if (ProcRank == 0) {
 		do {
 #ifdef DEBUG
-			Size = 6;
+			//Size = argv[1];
 #else 
 			printf("\nEnter the size of the matrix and the vector: ");
 #ifdef _WIN32
@@ -65,6 +65,9 @@ void ProcessInitialization(double* &pMatrix, double* &pVector,
 #endif
 			if (Size < ProcNum) {
 				printf("Size must be greater than number of processes! \n");
+#ifdef DEBUG
+				exit(1);
+#endif // DEBUG
 			}
 		} while (Size < ProcNum);
 	}
@@ -263,13 +266,13 @@ void TestDistribution(double* pMatrix, double* pVector, double* pProcRows,
 	MPI_Barrier(MPI_COMM_WORLD);
 	for (int i = 0; i<ProcNum; i++) {
 		if (ProcRank == i) {
-#ifdef DEBUG
-			printf("\nProcRank = %d \n", ProcRank);
-			printf(" Matrix Stripe:\n");
-			PrintMatrix(pProcRows, RowNum, Size);
-			printf(" Vector: \n");
-			PrintVector(pProcVector, RowNum);
-#endif // DEBUG
+// #ifdef DEBUG
+// 			printf("\nProcRank = %d \n", ProcRank);
+// 			printf(" Matrix Stripe:\n");
+// 			PrintMatrix(pProcRows, RowNum, Size);
+// 			printf(" Vector: \n");
+// 			PrintVector(pProcVector, RowNum);
+// #endif // DEBUG
 		}
 		MPI_Barrier(MPI_COMM_WORLD);
 	}
@@ -334,6 +337,7 @@ void main(int argc, char* argv[]) {
 	int Size; 
 	int RowNum; 
 	double start, finish, duration;
+	Size = atoi(argv[1]);
 	setvbuf(stdout, 0, _IONBF, 0);
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
