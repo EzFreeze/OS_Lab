@@ -5,11 +5,14 @@
 #include <mpi.h>
 
 #ifdef _WIN32
+#include <iostream>
 #include <conio.h>
 #pragma comment(lib,"msmpi.lib")
 #endif
 
 #define  DEBUG
+#define  TIME_TEST
+
 
 int ProcNum; 
 int ProcRank; 
@@ -142,24 +145,34 @@ void ResultCollection(double* pProcResult, double* pResult) {
 }
 
 void PrintMatrix(double* pMatrix, int RowCount, int ColCount) {
-	int i, j; 
+#ifdef TIME_TEST
+#else
+	int i, j;
 	for (i = 0; i < RowCount; i++) {
 		for (j = 0; j < ColCount; j++)
 			printf("%7.4f ", pMatrix[i*ColCount + j]);
 		printf("\n");
 	}
+#endif // TIME_TEST
 }
 
 void PrintVector(double* pVector, int Size) {
+#ifdef TIME_TEST
+#else
 	int i;
 	for (i = 0; i < Size; i++)
 		printf("%7.4f ", pVector[i]);
+#endif // TIME_TEST
 }
 
 void PrintResultVector(double* pResult, int Size) {
+#ifdef TIME_TEST
+#else
 	int i;
 	for (i = 0; i < Size; i++)
 		printf("%7.4f ", pResult[pParallelPivotPos[i]]);
+
+#endif // TIME_TEST
 }
 
 void ParallelEliminateColumns(double* pProcRows, double* pProcVector,
@@ -379,11 +392,16 @@ int main(int argc, char* argv[]) {
 		PrintResultVector(pResult, Size);
 	}
 	TestResult(pMatrix, pVector, pResult, Size);
-	if (ProcRank == 0)
-		printf("\n\nВремя выполнения: %f\n", duration);
+	if (ProcRank == 0){
+		printf("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+		printf("Количество потоков: %d\n", ProcNum);
+		printf("Размер матрицы: %d\n", Size);
+		printf("Время выполнения: %f\n", duration);
+		printf("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+	}
 	ProcessTermination(pMatrix, pVector, pResult, pProcRows, pProcVector,
 		pProcResult);
 	MPI_Finalize();
 	
-	return 5;
+	return 0;
 }
