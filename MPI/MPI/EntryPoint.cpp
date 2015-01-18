@@ -393,11 +393,11 @@ int main(int argc, char* argv[]) {
 	}
 	TestResult(pMatrix, pVector, pResult, Size);
 	if (ProcRank == 0){
-		printf("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+		printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 		printf("Количество потоков: %d\n", ProcNum);
 		printf("Размер матрицы: %d\n", Size);
 		printf("Время выполнения: %f\n", duration);
-		printf("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+		printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 	}
 	ProcessTermination(pMatrix, pVector, pResult, pProcRows, pProcVector,
 		pProcResult);
