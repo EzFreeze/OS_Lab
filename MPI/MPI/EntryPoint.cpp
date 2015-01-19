@@ -10,8 +10,10 @@
 #pragma comment(lib,"msmpi.lib")
 #endif
 
-#define  DEBUG
-#define  TIME_TEST
+#define	DEBUG
+#define	TIME_TEST
+//#define	RANDOM 
+
 
 
 int ProcNum; 
@@ -37,7 +39,11 @@ void DummyDataInitialization(double* pMatrix, double* pVector, int Size) {
 
 void RandomDataInitialization(double* pMatrix, double* pVector, int Size) {
 	int i, j; 
+#ifdef RANDOM
 	srand(unsigned(clock()));
+#else
+	srand(1);
+#endif // RANDOM
 	for (i = 0; i < Size; i++) {
 		pVector[i] = rand() / double(1000);
 		for (j = 0; j < Size; j++) {
@@ -146,6 +152,13 @@ void ResultCollection(double* pProcResult, double* pResult) {
 
 void PrintMatrix(double* pMatrix, int RowCount, int ColCount) {
 #ifdef TIME_TEST
+	int i, j;
+	for (i = 0; i < 10; i++) {
+		for (j = 0; j < 10; j++)
+			printf("%7.4f ", pMatrix[i*ColCount + j]);
+		printf("<...>\n");
+	}
+	printf("\n<...>\n");
 #else
 	int i, j;
 	for (i = 0; i < RowCount; i++) {
@@ -158,6 +171,10 @@ void PrintMatrix(double* pMatrix, int RowCount, int ColCount) {
 
 void PrintVector(double* pVector, int Size) {
 #ifdef TIME_TEST
+	int i;
+	for (i = 0; i < 10; i++)
+		printf("%7.4f ", pVector[i]);
+	printf("\n<...>\n");
 #else
 	int i;
 	for (i = 0; i < Size; i++)
@@ -167,11 +184,14 @@ void PrintVector(double* pVector, int Size) {
 
 void PrintResultVector(double* pResult, int Size) {
 #ifdef TIME_TEST
+	int i;
+	for (i = 0; i < 10; i++)
+		printf("%7.4f ", pResult[pParallelPivotPos[i]]);
+	printf("\n<...>\n");
 #else
 	int i;
 	for (i = 0; i < Size; i++)
 		printf("%7.4f ", pResult[pParallelPivotPos[i]]);
-
 #endif // TIME_TEST
 }
 

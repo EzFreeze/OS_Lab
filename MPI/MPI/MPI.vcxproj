@@ -63,7 +63,7 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>mpiexec -n 4 $(TargetPath) 100</Command>
+      <Command>mpiexec -n 1 $(TargetPath) 10</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
