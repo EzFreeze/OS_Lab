@@ -14,8 +14,6 @@
 #define	TIME_TEST
 //#define	RANDOM 
 
-
-
 int ProcNum; 
 int ProcRank; 
 int *pParallelPivotPos; 
@@ -292,10 +290,12 @@ void ParallelBackSubstitution(double* pProcRows, double* pProcVector,
 void TestDistribution(double* pMatrix, double* pVector, double* pProcRows,
 	double* pProcVector, int Size, int RowNum) {
 	if (ProcRank == 0) {
+#ifdef DEBUG
 		printf("\nУравнение: \n\n");
 		PrintMatrix(pMatrix, Size, Size);
 		printf("\nСвободные члены: \n");
 		PrintVector(pVector, Size);
+#endif
 	}
 	MPI_Barrier(MPI_COMM_WORLD);
 	for (int i = 0; i<ProcNum; i++) {

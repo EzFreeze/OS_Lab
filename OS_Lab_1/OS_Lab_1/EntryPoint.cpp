@@ -60,9 +60,7 @@ void PrintMemory(vector<mem_block> memory)
 	for (size_t i = 0; i < memory.size(); i++)
 	{
 		cout<< " ID: "<< setw(3) <<(i + 1)
-			<< " Lock: " << setw(5) << ((memory[i].bLock) ? "true" : "false")
-			<< " Clild ID: " << setw(3) << (memory[i].iChild_id) 
-			<< " Parent ID: " << setw(3) << (memory[i].iParent_id) << endl;
+			<< " Lock: " << setw(5) << ((memory[i].bLock) ? "true" : "false")<<endl;
 	}
 	cout << "\nSTATUS: " << error << endl;
 }
@@ -188,8 +186,8 @@ int main()
 
 	while (true)
 	{
-		clear
-		PrintMemory(memory);
+		//clear
+		//PrintMemory(memory);
 		cout << "\ncommand>";
 		cin >> sBuffer;
 
@@ -205,9 +203,13 @@ int main()
 			cin >> sBuffer;
 			FreeMemory(atoi(sBuffer.c_str()), memory);
 		}
-		else if (sBuffer.find("clear"))
+		else if (sBuffer.find("clear") != -1)
 		{
 			ClearMemory(memory);
+		}
+		else if (sBuffer.find("show") != -1)
+		{
+			PrintMemory(memory);
 		}
 	}
 	return 1;
