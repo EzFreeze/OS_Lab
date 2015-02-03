@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <time.h>
 #include <assert.h>
+#include <iomanip>
 
 using namespace std;
 /************************************************************************/
@@ -40,28 +41,22 @@ void init()
 			(0 + rand() % cCyl),
 			(0 + rand() % cGol),
 			(0 + rand() % cSec),
-			((0 + rand() % 2) ? true: false) 
+			((rand() % 2) ? true: false) 
 		});
 	}
 }
 
 void PrintRequests()
 {
-	cout << "/************************************************************************/" << endl;
-	cout << "/*                           /Запросы к диску/                          */" << endl;
-	cout << "/************************************************************************/" << endl;
-
 	for (size_t i = 0; i < gRequest.size(); i++)
 	{
 		cout 
-			<< "Cyl = " << gRequest.at(i).nCyl 
-			<< "\t   Gol = " << gRequest.at(i).nGol 
-			<< "\t   Sec = " << gRequest.at(i).nSec 
-			<< "\t   Type = " << gRequest.at(i).oType 
+			<< "     |\tЦилиндр:"		<< gRequest.at(i).nCyl
+			<< "   \t|\tГоловка:"		<< gRequest.at(i).nGol
+			<< "   \t|\tСектор:"		<< gRequest.at(i).nSec
+			<< "   \t|\tТип операции:"	<< gRequest.at(i).oType
 		<< endl;
 	}
-
-	cout << "/************************************************************************/" << endl;
 }
 
 class HDD
@@ -98,4 +93,5 @@ void main()
 	init();
 	FIFO* pFIFO = new FIFO();
 	PrintRequests();
+
 }
