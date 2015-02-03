@@ -53,7 +53,12 @@ void PrintRequests()
 
 	for (size_t i = 0; i < gRequest.size(); i++)
 	{
-		cout << "Cyl = " << gRequest.at(i).nCyl << "\t   Gol = " << gRequest.at(i).nGol << "\t   Sec = " << gRequest.at(i).nSec << "\t   Type = " << gRequest.at(i).oType << endl;
+		cout 
+			<< "Cyl = " << gRequest.at(i).nCyl 
+			<< "\t   Gol = " << gRequest.at(i).nGol 
+			<< "\t   Sec = " << gRequest.at(i).nSec 
+			<< "\t   Type = " << gRequest.at(i).oType 
+		<< endl;
 	}
 
 	cout << "/************************************************************************/" << endl;
