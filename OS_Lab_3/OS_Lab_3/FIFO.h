@@ -38,7 +38,7 @@ namespace FIFO{
 				exTime	+= ((abs(curPos.nCyl - request.back().nCyl))*tJump)/1000;	//¬рем€ перехода между дорожками (в секундах)
 				curPos	= request.back();
 
-
+				//-
 
 				request.pop_back();													//удалить элемент из массива
 				request.push_back({
@@ -48,7 +48,7 @@ namespace FIFO{
 					((rand() % 2) ? true : false)
 				});
 
-				if ((pTime+exTime) > MaxTime) break;							   //проверка времени моделировани€
+				if ((pTime+exTime) > MaxTime) break;								//проверка времени моделировани€
 			}
 		}
 		catch (const std::out_of_range& e){
