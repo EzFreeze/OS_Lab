@@ -17,7 +17,7 @@ const int cSec		= 16;/*количество секторов */
 const float vSpeed	= 1000.0f/60.0f	/*об/сек */;
 const float tJump	= .5f;/*время перехода с дорожки на соседнюю дорожку */
 /************************************************************************/
-const int cReq		= 10000;/*общее количество запросов*/
+const int cReq		= 100;/*общее количество запросов*/
 const int tMax		= 3600;
 /************************************************************************/
 
@@ -49,9 +49,8 @@ float RandFloat(float max){
 void PrintResult(float minTime, float maxTime, float avrTime, 
 	float avrTime2, int max_leght, float eTime)
 {
-
 	std::cout
-		<< "Минимальное время обслуживания: " << minTime << std::endl
+		<< "\nМинимальное время обслуживания: " << minTime << std::endl
 		<< "Максимальное время обслуживания: " << maxTime << std::endl
 		<< "Среднее	время обслуживания: " << avrTime << std::endl
 		<< "Среднеквадратическое отклонение от среднего: " << avrTime2 << std::endl
@@ -62,6 +61,7 @@ void PrintResult(float minTime, float maxTime, float avrTime,
 
 
 void FIFO(){
+	std::cout << " - FIFO - " << std::endl;
 	std::vector<sRequest>	FIFO_ReqList	= ReqList;
 	std::vector<float>		ExTimeArray;
 	sRequest				CurPos = { 1, 1, 1, 1 };
@@ -69,6 +69,7 @@ void FIFO(){
 	float					gExTime = .0f;
 	float					eTime = .0f;
 	while (FIFO_ReqList.size()){
+		std::cout << FIFO_ReqList.back().nCyl << " -> ";
 		exTime = (deff(CurPos.nCyl, FIFO_ReqList.back().nCyl)*tJump) / 1000; /*Время выполнения запроса (в секундах)*/
 		eTime += RandFloat(2);
 		if (FIFO_ReqList.back().oType == 1)
@@ -127,7 +128,75 @@ void FIFO(){
 
 void SSTF()
 {
+	std::cout << " - SSTF - " << std::endl;
+	std::vector<sRequest>	SSTF_ReqList = ReqList;
+	std::vector<float>		ExTimeArray;
+	sRequest				CurPos = { 1, 1, 1, 1 };
+	float					exTime = .0f;
+	float					gExTime = .0f;
+	float					eTime = .0f;
+	/*-------------------------------------------*/
 
+	while (SSTF_ReqList.size()){
+		int temp = cCyl;
+		size_t index; 
+		for (size_t i = 0; i < SSTF_ReqList.size(); i++){
+			if (deff(CurPos.nCyl,SSTF_ReqList.at(i).nCyl) < temp){
+				temp = deff(CurPos.nCyl, SSTF_ReqList.at(i).nCyl);
+				index = i;}}
+		std::cout << SSTF_ReqList.at(index).nCyl << " -> ";
+		eTime += RandFloat(2);
+		exTime += (deff(CurPos.nCyl, SSTF_ReqList.at(index).nCyl)*tJump) / 1000;;
+		if (SSTF_ReqList.at(index).oType == 1)
+		{exTime += (1 / vSpeed) * 2;}
+		else
+		{exTime += (1 / vSpeed);}
+		gExTime += exTime;
+		ExTimeArray.push_back(exTime);
+
+		SSTF_ReqList.erase(SSTF_ReqList.begin() + index);
+	}
+
+	/************************************************************************/
+	/*                      Среднее время выполнения                        */
+	/************************************************************************/
+	float t = .0f; /*Среднее время выполнений запроса*/
+	for (size_t i = 0; i < ExTimeArray.size(); i++){
+		t += ExTimeArray.at(i);
+	}
+	t /= ExTimeArray.size();
+
+	/************************************************************************/
+	/*                      Среднеквадратическое отклонение                 */
+	/************************************************************************/
+	float t2 = .0f;/*Среднеквадратическое отклонение*/
+	for (size_t i = 0; i < ExTimeArray.size(); i++){
+		t2 += pow((ExTimeArray.at(i) - t), 2);
+	}
+	t2 = sqrt(t2 / ExTimeArray.size());
+
+	/************************************************************************/
+	/*                       Минимальное время выполнения                   */
+	/************************************************************************/
+
+	float min = ExTimeArray.at(0);
+	for (size_t i = 0; i < ExTimeArray.size(); i++){
+		if (min > ExTimeArray.at(i)){
+			min = ExTimeArray.at(i);
+		}
+	}
+
+	/************************************************************************/
+	/*                       Максимальное время выполнения                  */
+	/************************************************************************/
+
+	float max = ExTimeArray.at(0);
+	for (size_t i = 0; i < ExTimeArray.size(); i++){
+		if (max < ExTimeArray.at(i)){
+			max = ExTimeArray.at(i);
+		}
+	}
+	PrintResult(min, max, t, t2, cReq, eTime);
 }
 
 void main(){
@@ -136,5 +205,5 @@ void main(){
 #endif // _WIN32
 	InitReqList();
 	FIFO();
-
+	SSTF();
 }
