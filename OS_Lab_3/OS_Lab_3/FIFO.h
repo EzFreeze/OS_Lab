@@ -1,0 +1,8 @@
+namespace FIFO
+{
+
+	void FIFO()
+	{
+
+	}
+}

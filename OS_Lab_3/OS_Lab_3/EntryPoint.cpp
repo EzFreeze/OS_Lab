@@ -1,4 +1,4 @@
-﻿//проверка
+﻿
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -7,6 +7,10 @@
 #include <iomanip>
 
 using namespace std;
+
+#include "FIFO.h"
+#include "SSTF.h"
+
 /************************************************************************/
 /*                           Исходные данные                            */
 /************************************************************************/
@@ -30,68 +34,12 @@ size_t			 cRequest = 10	/*количество запросов*/;
 vector<sRequest> gRequest		/*массив с запросами*/;
 /************************************************************************/
 
-void init()
-{
-	srand(clock());
-
-	for (size_t i = 0; i < cRequest; i++)
-	{
-		gRequest.push_back(
-		{ 
-			(0 + rand() % cCyl),
-			(0 + rand() % cGol),
-			(0 + rand() % cSec),
-			((rand() % 2) ? true: false) 
-		});
-	}
-}
-
-void PrintRequests()
-{
-	for (size_t i = 0; i < gRequest.size(); i++)
-	{
-		cout 
-			<< "     |\tЦилиндр:"		<< gRequest.at(i).nCyl
-			<< "   \t|\tГоловка:"		<< gRequest.at(i).nGol
-			<< "   \t|\tСектор:"		<< gRequest.at(i).nSec
-			<< "   \t|\tТип операции:"	<< gRequest.at(i).oType
-		<< endl;
-	}
-}
-
-class HDD
-{
-public:
-	/************************************************************************/
-	/*                           /Запрос к диску/                           */
-	/************************************************************************/
-	virtual void Request(sRequest dRequest) = 0;
-	/************************************************************************/
-private:
-	vector<int> pRequest;
-};
-
-
-class FIFO:HDD
-{
-public:	
-	virtual void Request(sRequest dRequest)
-	{
-
-	}
-private:
-
-};
-
-
 void main()
 {
 #ifdef _WIN32
 	setlocale(LC_ALL, "Russian");
 #endif // _WIN32
-
-	init();
-	FIFO* pFIFO = new FIFO();
-	PrintRequests();
+	FIFO::FIFO();
+	SSTF::SSTF();
 
 }
