@@ -1,9 +1,0 @@
-﻿namespace SSTF
-{
-	void SSTF()
-	{
-
-	}
-
-
-}

@@ -83,10 +83,6 @@
   <ItemGroup>
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FIFO.h" />
-    <ClInclude Include="SSTF.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
