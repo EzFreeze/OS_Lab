@@ -1,4 +1,4 @@
-namespace SSTF
+﻿namespace SSTF
 {
 	void SSTF()
 	{

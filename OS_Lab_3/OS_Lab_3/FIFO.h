@@ -1,8 +1,8 @@
-namespace FIFO{
+п»їnamespace FIFO{
 	size_t cRequest = 1;
-	float pTime;			// Время простоя
-	float exTime;			// Время работы
-	float MaxTime = 3600;	// Время моделирования
+	float pTime;			// Р’СЂРµРјСЏ РїСЂРѕСЃС‚РѕСЏ
+	float exTime;			// Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹
+	float MaxTime = 3600;	// Р’СЂРµРјСЏ РјРѕРґРµР»РёСЂРѕРІР°РЅРёСЏ
 
 	std::vector<sRequest> request;
 	sRequest curPos = { 1, 1, 1, 1 };
@@ -34,13 +34,13 @@ namespace FIFO{
 		try{
 			while (request.size() != 0)
 			{
-				pTime	+= RandFloat(2);											// время простоя
-				exTime	+= ((abs(curPos.nCyl - request.back().nCyl))*tJump)/1000;	//Время перехода между дорожками (в секундах)
+				pTime	+= RandFloat(2);											// РІСЂРµРјСЏ РїСЂРѕСЃС‚РѕСЏ
+				exTime	+= ((abs(curPos.nCyl - request.back().nCyl))*tJump)/1000;	//Р’СЂРµРјСЏ РїРµСЂРµС…РѕРґР° РјРµР¶РґСѓ РґРѕСЂРѕР¶РєР°РјРё (РІ СЃРµРєСѓРЅРґР°С…)
 				curPos	= request.back();
 
 				//-
 
-				request.pop_back();													//удалить элемент из массива
+				request.pop_back();													//СѓРґР°Р»РёС‚СЊ СЌР»РµРјРµРЅС‚ РёР· РјР°СЃСЃРёРІР°
 				request.push_back({
 					(0 + rand() % cCyl),
 					(0 + rand() % cGol),
@@ -48,14 +48,14 @@ namespace FIFO{
 					((rand() % 2) ? true : false)
 				});
 
-				if ((pTime+exTime) > MaxTime) break;								//проверка времени моделирования
+				if ((pTime+exTime) > MaxTime) break;								//РїСЂРѕРІРµСЂРєР° РІСЂРµРјРµРЅРё РјРѕРґРµР»РёСЂРѕРІР°РЅРёСЏ
 			}
 		}
 		catch (const std::out_of_range& e){
 			std::cout <<"Error: "<< e.what() << std::endl;
 		}
 		
-		std::cout << "Время  работы: " << exTime	<< std::endl;
-		std::cout << "Время простоя: " << pTime		<< std::endl;
+		std::cout << "Р’СЂРµРјСЏ  СЂР°Р±РѕС‚С‹: " << exTime	<< std::endl;
+		std::cout << "Р’СЂРµРјСЏ РїСЂРѕСЃС‚РѕСЏ: " << pTime		<< std::endl;
 	}
 }
