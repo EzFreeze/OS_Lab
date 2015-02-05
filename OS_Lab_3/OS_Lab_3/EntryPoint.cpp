@@ -5,6 +5,7 @@
 #include <time.h>
 #include <assert.h>
 #include <iomanip>
+#include <fstream>
 
 #define deff(a,b)				abs(a-b)
 #define check_time(a,b)			if(a > b) break;
@@ -17,9 +18,11 @@ const int cSec		= 16;/*количество секторов */
 const float vSpeed	= 1000.0f/60.0f	/*об/сек */;
 const float tJump	= .5f;/*время перехода с дорожки на соседнюю дорожку */
 /************************************************************************/
-const int cReq		= 100;/*общее количество запросов*/
+const int cReq		= 100000;/*общее количество запросов*/
 const int tMax		= 3600;
 /************************************************************************/
+
+
 
 struct sRequest{
 	int		nCyl	/*номер цилиндра*/;
@@ -29,6 +32,8 @@ struct sRequest{
 };
 
 std::vector<sRequest> ReqList /*список запросов*/;
+std::fstream GisLog;
+
 
 void InitReqList()
 {
@@ -50,11 +55,11 @@ void PrintResult(float minTime, float maxTime, float avrTime,
 	float avrTime2, int max_leght, float eTime)
 {
 	std::cout
-		<< "\nМинимальное время обслуживания: " << minTime << std::endl
+		<< "Минимальное время обслуживания: " << minTime << std::endl
 		<< "Максимальное время обслуживания: " << maxTime << std::endl
 		<< "Среднее	время обслуживания: " << avrTime << std::endl
 		<< "Среднеквадратическое отклонение от среднего: " << avrTime2 << std::endl
-		<< "Максимальная длина очереди: " << max_leght << std::endl
+		<< "Количество обработанных запросов: " << max_leght << std::endl
 		<< "Время простоя: " << eTime << std::endl;
 }
 
@@ -68,17 +73,25 @@ void FIFO(){
 	float					exTime = .0f;
 	float					gExTime = .0f;
 	float					eTime = .0f;
+	/************************************************************************/
+
 	while (FIFO_ReqList.size()){
-		std::cout << FIFO_ReqList.back().nCyl << " -> ";
 		exTime = (deff(CurPos.nCyl, FIFO_ReqList.back().nCyl)*tJump) / 1000; /*Время выполнения запроса (в секундах)*/
-		eTime += RandFloat(2);
+		CurPos = FIFO_ReqList.back();
+		eTime += RandFloat(0.02f);
+		
 		if (FIFO_ReqList.back().oType == 1)
 		{ exTime += (1/vSpeed)*2;} 
 		else
 		{ exTime += (1/vSpeed);}
-		gExTime += exTime;
+
+		GisLog.open(L"FIFO.log", std::ios_base::app);
+		GisLog << exTime << std::endl;
+		GisLog.close();
+
+		gExTime += exTime + eTime;
 		ExTimeArray.push_back(exTime);
-		check_time(exTime, tMax);
+		check_time(gExTime, tMax);
 		FIFO_ReqList.pop_back();
 	}
 
@@ -122,7 +135,7 @@ void FIFO(){
 		}
 	}
 
-	PrintResult(min, max, t, t2, cReq, eTime);
+	PrintResult(min, max, t, t2, ExTimeArray.size(), eTime);
 }
 
 
@@ -135,7 +148,7 @@ void SSTF()
 	float					exTime = .0f;
 	float					gExTime = .0f;
 	float					eTime = .0f;
-	/*-------------------------------------------*/
+	/************************************************************************/
 
 	while (SSTF_ReqList.size()){
 		int temp = cCyl;
@@ -144,15 +157,23 @@ void SSTF()
 			if (deff(CurPos.nCyl,SSTF_ReqList.at(i).nCyl) < temp){
 				temp = deff(CurPos.nCyl, SSTF_ReqList.at(i).nCyl);
 				index = i;}}
-		std::cout << SSTF_ReqList.at(index).nCyl << " -> ";
-		eTime += RandFloat(2);
-		exTime += (deff(CurPos.nCyl, SSTF_ReqList.at(index).nCyl)*tJump) / 1000;;
+		eTime += RandFloat(0.02f);
+		exTime = (deff(CurPos.nCyl, SSTF_ReqList.at(index).nCyl)*tJump) / 1000;
+		CurPos = SSTF_ReqList.at(index);
+		
 		if (SSTF_ReqList.at(index).oType == 1)
 		{exTime += (1 / vSpeed) * 2;}
 		else
 		{exTime += (1 / vSpeed);}
-		gExTime += exTime;
+		
+		GisLog.open(L"SSTF.log", std::ios_base::app);
+		GisLog << exTime << std::endl;
+		GisLog.close();
+
+		gExTime += exTime + eTime;
 		ExTimeArray.push_back(exTime);
+
+		check_time(gExTime, tMax);
 
 		SSTF_ReqList.erase(SSTF_ReqList.begin() + index);
 	}
@@ -196,7 +217,7 @@ void SSTF()
 			max = ExTimeArray.at(i);
 		}
 	}
-	PrintResult(min, max, t, t2, cReq, eTime);
+	PrintResult(min, max, t, t2, ExTimeArray.size() , eTime);
 }
 
 void main(){
